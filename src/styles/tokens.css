@@ -16,9 +16,11 @@
   --fund-rose:       #EF5DA8;
   --fund-sapphire:   #3F7EE8;
 }
-:root{
-  --color-primary: var(--market-sapphire);
-  --color-accent:  var(--market-garnet);
+:root {
+  --color-primary: #2B6CB0; /* sapphire */
+  --color-accent:  #8B0000; /* garnet-ish */
+  --color-paper:   #0a0a0a;
+  --color-ink:     #ffffff;
 }
 @layer base {
   html, body {
