@@ -1,0 +1,10 @@
+/* plain CSS, uses your tokens */
+.hip-btn {
+    padding: 0.5rem 1rem;       /* ~px-4 py-2 */
+    border-radius: 0.375rem;    /* ~rounded-md */
+    font-weight: 500;           /* ~font-medium */
+    background: var(--color-primary);
+    color: #fff;
+    transition: opacity .15s ease-in-out;
+  }
+  .hip-btn:hover { opacity: .9; }
