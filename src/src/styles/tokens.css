@@ -1,0 +1,28 @@
+:root{
+  --color-ink: #0B0B0C;
+  --color-paper: #0F0F12;
+  --market-sapphire: #1E3A8A;   
+  --market-garnet:   #8B1E3A;  
+  --places-jade:     #1F8A70;
+  --places-peridot:  #A3D23F;
+  --wallet-gold:     #D4AF37;
+  --comms-mercury:   #B3B9C6;
+  --directory-lapis: #2F5DAA;
+  --directory-turq:  #2FB6A1;
+  --knowledge-emerald:#1B7F5F;
+  --knowledge-turq:   #2FB6A1;
+  --event-amber:     #FFB000;
+  --event-citrine:   #E3D26F;
+  --fund-rose:       #EF5DA8;
+  --fund-sapphire:   #3F7EE8;
+}
+:root{
+  --color-primary: var(--market-sapphire);
+  --color-accent:  var(--market-garnet);
+}
+@layer base {
+  html, body {
+    color: white;
+    background: var(--color-paper);
+  }
+}
