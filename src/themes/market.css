@@ -1,6 +1,5 @@
 @import "../styles/index.css";
 
-/* Planet Market theme override */
 :root {
   --color-primary: var(--market-garnet);
   --color-accent: var(--market-sapphire);
