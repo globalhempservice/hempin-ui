@@ -1,9 +1,5 @@
 [build]
-  # 1) install root deps
-  # 2) build the library -> dist
-  # 3) install playground deps
-  # 4) build the playground
-  command = "npm ci && npm run lib:build && npm --prefix playground ci && npm --prefix playground run build"
+  command = "npm install --no-audit --no-fund && npm run lib:build && cd playground && npm install --no-audit --no-fund && npm run build"
   publish = "playground/.next"
 
 [build.environment]

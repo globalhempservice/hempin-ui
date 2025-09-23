@@ -1,7 +1,6 @@
 'use client'
-
 import React from 'react'
-// In CI/Netlify: import the built library (../dist)
+// Build-safe: import compiled library
 import { PanelProvider, ShellLayout } from '../../dist'
 
 export default function ClientShell({ children }: { children: React.ReactNode }) {
