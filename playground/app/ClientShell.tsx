@@ -1,9 +1,8 @@
-// playground/app/ClientShell.tsx
 'use client'
 
 import React from 'react'
-// IMPORTANT: import from source, not from dist
-import { PanelProvider, ShellLayout } from '../../src'
+// In CI/Netlify: import the built library (../dist)
+import { PanelProvider, ShellLayout } from '../../dist'
 
 export default function ClientShell({ children }: { children: React.ReactNode }) {
   return (

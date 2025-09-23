@@ -1,7 +1,10 @@
 [build]
-  base    = "playground"
-  command = "npm run build"
-  publish = ".next"
+  # 1) install root deps
+  # 2) build the library -> dist
+  # 3) install playground deps
+  # 4) build the playground
+  command = "npm ci && npm run lib:build && npm --prefix playground ci && npm --prefix playground run build"
+  publish = "playground/.next"
 
 [build.environment]
   NODE_VERSION = "20"
