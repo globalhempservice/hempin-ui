@@ -1,13 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-    content: [
-      "./app/**/*.{ts,tsx}",
-      "./components/**/*.{ts,tsx}",
-      // ALSO watch the library during dev:
-      "../src/**/*.{ts,tsx}"
-    ],
-    theme: {
-      extend: {},
-    },
-    plugins: [],
-  };
+  content: [
+    "./app/**/*.{js,ts,jsx,tsx}",
+    "./pages/**/*.{js,ts,jsx,tsx}", // in case you add pages later
+    "./components/**/*.{js,ts,jsx,tsx}",
+    "../src/**/*.{js,ts,jsx,tsx}",  // pull in components from the UI lib
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+};

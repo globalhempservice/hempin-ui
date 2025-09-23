@@ -1,0 +1,10 @@
+/* Tailwind first */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Then your library styles that rely on @layer */
+@import "../../src/styles/tokens.css";
+@import "../../src/styles/index.css";
+
+/* (Optional) project-level resets after Tailwind if needed */

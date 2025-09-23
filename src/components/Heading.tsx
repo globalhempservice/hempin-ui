@@ -1,29 +1,38 @@
-import * as React from "react";
+import * as React from 'react';
+import clsx from 'clsx';
 
-type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
+type As = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 
-export interface HeadingProps
-  extends React.HTMLAttributes<HTMLHeadingElement> {
-  as?: HeadingLevel;
-}
+export type HeadingProps = {
+  as?: As;
+  className?: string;
+  children?: React.ReactNode;
+} & React.HTMLAttributes<HTMLHeadingElement>;
 
-const sizeByLevel: Record<HeadingLevel, string> = {
-  1: "text-4xl sm:text-5xl font-extrabold tracking-tight",
-  2: "text-3xl sm:text-4xl font-bold",
-  3: "text-2xl sm:text-3xl font-semibold",
-  4: "text-xl sm:text-2xl font-semibold",
-  5: "text-lg font-semibold",
-  6: "text-base font-semibold",
+const base = 'font-semibold tracking-tight text-white';
+
+const sizes: Record<As, string> = {
+  h1: 'text-3xl sm:text-4xl',
+  h2: 'text-2xl sm:text-3xl',
+  h3: 'text-xl sm:text-2xl',
+  h4: 'text-lg',
+  h5: 'text-base',
+  h6: 'text-sm',
 };
 
-export function Heading({ as = 1, className = "", children, ...rest }: HeadingProps) {
-  const Tag = (`h${as}` as unknown) as keyof JSX.IntrinsicElements;
-  return (
-    <Tag
-      {...rest}
-      className={`${sizeByLevel[as]} text-[var(--color-ink)] ${className}`}
-    >
-      {children}
-    </Tag>
+/**
+ * Note: we use React.createElement to keep the TS signature for HTMLHeadingElement.
+ * This avoids JSX inferring an SVG type in DTS generation.
+ */
+export function Heading({ as = 'h2', className, children, ...rest }: HeadingProps) {
+  return React.createElement(
+    as,
+    {
+      className: clsx(base, sizes[as], className),
+      ...rest,
+    },
+    children
   );
 }
+
+export default Heading;
