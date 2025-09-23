@@ -1,4 +1,5 @@
 /* Library entry CSS: import tokens and component-level styles */
 @import "./tokens.css";
 @import "./button.css";    /* if you have it */
+@import "./shell.css";     /* if you have it */
 /* add other component css files here as you create them */
