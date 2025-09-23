@@ -1,7 +1,11 @@
 [build]
-  command = "npm install --no-audit --no-fund && npm run lib:build && cd playground && npm install --no-audit --no-fund && npm run build"
-  publish = "playground/.next"
+  base = "playground"
+  command = "bash -lc 'cd .. && npm install --no-audit --no-fund && npm run lib:build && cd playground && npm install --no-audit --no-fund && npm run build'"
+  publish = ".next"
 
 [build.environment]
   NODE_VERSION = "20"
   NEXT_TELEMETRY_DISABLED = "1"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
