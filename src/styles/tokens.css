@@ -22,7 +22,7 @@
   --color-paper:   #0a0a0a;
   --color-ink:     #ffffff;
 }
-@layer base {
+
   html, body {
     color: white;
     background: var(--color-paper);
