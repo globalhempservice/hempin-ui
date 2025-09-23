@@ -29,26 +29,29 @@
     "play:build": "cd playground && next build",
     "play:start": "cd playground && next start -p 3000"
   },
-  "devDependencies": {
-    "autoprefixer": "^10.4.21",
-    "cross-env": "^7.0.3",
-    "next": "14.2.5",
-    "npm-run-all": "^4.1.5",
-    "postcss": "^8.4.38",
-    "prettier": "^3.3.3",
-    "rimraf": "^5.0.5",
-    "tailwindcss": "^3.4.10",
-    "tsup": "^8.5.0",
-    "typescript": "^5.5.4"
-  },
-  "dependencies": {
-    "clsx": "^2.1.1",
-    "@types/react": "^18.3.1",
-    "@types/react-dom": "^18.3.1",
-    "@types/node": "^20.11.30",
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
-  },
+  
+    "dependencies": {
+      "next": "14.2.5",
+      "react": "18.3.1",
+      "react-dom": "18.3.1",
+      "clsx": "^2.1.1"
+    },
+    "devDependencies": {
+      "autoprefixer": "^10.4.21",
+      "cross-env": "^7.0.3",
+      "npm-run-all": "^4.1.5",
+      "postcss": "^8.4.38",
+      "prettier": "^3.3.3",
+      "rimraf": "^5.0.5",
+      "tailwindcss": "^3.4.10",
+      "tsup": "^8.5.0",
+      "typescript": "^5.5.4",
+      "@types/node": "^20.11.30",
+      "@types/react": "^18.3.1",
+      "@types/react-dom": "^18.3.1"
+    }
+  
+  
   "peerDependencies": {
     "react": ">=18",
     "react-dom": ">=18"
