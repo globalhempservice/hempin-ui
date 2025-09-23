@@ -1,6 +1,6 @@
 [build]
-  command = "npm run play:build"
-  publish = "playground"
+  command = "npm run build && npm run play:build"
+  publish = "playground/.next"
 
 [build.environment]
   NODE_VERSION = "20"
