@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
-const config = {
-  reactStrictMode: true
+const nextConfig = {
+  experimental: {
+    externalDir: true, // allow ../src imports
+  },
 };
-export default config;
+
+module.exports = nextConfig;
