@@ -1,8 +1,17 @@
+// playground/next.config.mjs
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    externalDir: true, // allow ../src imports
-  },
+  reactStrictMode: true,
+
+  // We are importing from ../src during playground build
+  experimental: { externalDir: true },
+
+  // If you ever import from the built package name, you can keep this too:
+  // transpilePackages: ['hempin-ui'],
+
+  // (Optional) makes serverless deploys happier
+  output: 'standalone',
 };
 
-module.exports = nextConfig;
+export default nextConfig;
