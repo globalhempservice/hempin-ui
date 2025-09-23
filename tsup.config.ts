@@ -5,15 +5,14 @@ export default defineConfig({
   format: ['esm', 'cjs'],
   dts: true,
   sourcemap: true,
-  target: 'es2022',
-  // Don't bundle host-app deps
+  clean: true,
+  treeshake: true,
+  // Mark framework deps as external so the lib never tries to bundle them
   external: [
     'react',
     'react-dom',
-    // mark any `next` import external (next/link, next/navigation, etc.)
-    /^next(\/.*)?$/,
+    'clsx',
+    'next',
+    'next/*',
   ],
-  esbuildOptions(options) {
-    options.platform = 'browser';
-  },
 });
