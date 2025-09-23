@@ -1,21 +1,16 @@
-import * as React from 'react';
-import Link from 'next/link';
+'use client'
 
-export function BottomBar({
-  items
-}: {
-  items: { href: string; label: string; icon?: React.ReactNode }[];
-}) {
+import React from 'react'
+import { NavItem } from './NavItem'
+
+export default function BottomBar() {
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-black/60 backdrop-blur supports-[backdrop-filter]:bg-black/30 px-4 py-2 flex justify-around sm:hidden">
-      {items.map(it => (
-        <Link key={it.href} href={it.href} className="flex flex-col items-center text-xs gap-1">
-          <span className="grid h-8 w-8 place-items-center rounded-full bg-white/10 ring-1 ring-white/10">
-            {it.icon ?? it.label[0]}
-          </span>
-          {it.label}
-        </Link>
-      ))}
+    <nav className="sm:hidden fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-black/60 backdrop-blur">
+      <div className="mx-auto max-w-screen-xl grid grid-cols-3">
+        <NavItem href="/" label="Home" layout="tab" />
+        <NavItem href="/notifications" label="Notifications" layout="tab" />
+        <NavItem href="/you" label="You" layout="tab" />
+      </div>
     </nav>
-  );
+  )
 }
