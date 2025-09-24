@@ -7,6 +7,11 @@ import { BottomSheet } from './BottomSheet';
 import LeftRail from './LeftRail';
 import BottomBar from './BottomBar';
 import type { NavItem } from './types';
+import { universeColors } from './universeColors';
+import { ChevronLeft, ChevronRight } from './icons';
+import { Button } from '../components/Button';
+import { Badge } from '../components/Badge';
+
 
 const universes: NavItem[] = [
   {
@@ -15,7 +20,7 @@ const universes: NavItem[] = [
     abbr: 'MK',
     href: 'https://market.hempin.org',
     external: true,
-    color: 'bg-amber-400',
+    gradient: universeColors.market.gradient,
     children: [
       { label: 'Go shopping',     href: 'https://market.hempin.org',          external: true },
       { label: 'Manage my brand', href: 'https://market.hempin.org/brand',    external: true },
@@ -29,7 +34,7 @@ const universes: NavItem[] = [
     abbr: 'KL',
     href: 'https://knowledge.hempin.org',
     external: true,
-    color: 'bg-rose-400',
+    gradient: universeColors.knowledge.gradient,
     children: [{ label: 'Browse articles', href: 'https://knowledge.hempin.org', external: true }],
   },
   {
@@ -38,16 +43,16 @@ const universes: NavItem[] = [
     abbr: 'DY',
     href: 'https://directory.hempin.org',
     external: true,
-    color: 'bg-lime-400',
+    gradient: universeColors.directory.gradient,
     children: [{ label: 'Find people/orgs', href: 'https://directory.hempin.org', external: true }],
   },
   {
-    key: 'place',
-    label: 'Place',
+    key: 'places',
+    label: 'Places',
     abbr: 'PL',
     href: 'https://place.hempin.org',
     external: true,
-    color: 'bg-cyan-400',
+    gradient: universeColors.places.gradient,
   },
   {
     key: 'fund',
@@ -55,15 +60,15 @@ const universes: NavItem[] = [
     abbr: 'FD',
     href: 'https://fund.hempin.org',
     external: true,
-    color: 'bg-purple-400',
+    gradient: universeColors.fund.gradient,
   },
   {
-    key: 'event',
-    label: 'Event',
+    key: 'events',
+    label: 'Events',
     abbr: 'EV',
     href: 'https://event.hempin.org',
     external: true,
-    color: 'bg-pink-400',
+    gradient: universeColors.events.gradient,
   },
 ];
 
