@@ -6,6 +6,7 @@ import { SlidePanel } from './SlidePanel';
 import { BottomSheet } from './BottomSheet';
 import LeftRail from './LeftRail';
 import BottomBar from './BottomBar';
+import GlowButton from '../components/GlowButton';
 import type { NavItem } from './types';
 import clsx from 'clsx';
 
@@ -184,13 +185,23 @@ export function ShellLayout({ children }: { children: React.ReactNode }) {
       </SlidePanel>
 
       {/* Bottom sheets */}
-      <BottomSheet open={bottomSheet === 'me'} onClose={() => setBottomSheet(null)}>
-        <div className="space-y-3 text-sm">
-          <div className="rounded-lg bg-white/5 p-3 ring-1 ring-white/10">Profile</div>
-          <div className="rounded-lg bg-white/5 p-3 ring-1 ring-white/10">Status: Online</div>
-          <div className="rounded-lg bg-white/5 p-3 ring-1 ring-white/10">Switch account</div>
-        </div>
-      </BottomSheet>
+<BottomSheet open={bottomSheet === 'me'} onClose={() => setBottomSheet(null)}>
+  <div className="space-y-3 text-sm">
+    <div className="rounded-lg bg-white/5 p-3 ring-1 ring-white/10">Profile</div>
+    <div className="rounded-lg bg-white/5 p-3 ring-1 ring-white/10">Status: Online</div>
+
+    {/* New glowing switch button */}
+    <GlowButton
+      onClick={() => {
+        console.log('Switch dimension');
+        // later: replace with your real pro<->consumer toggle
+      }}
+      className="w-full"
+    >
+      Switch Dimension
+    </GlowButton>
+  </div>
+</BottomSheet>
 
       <BottomSheet open={bottomSheet === 'notifications'} onClose={() => setBottomSheet(null)}>
         <div className="space-y-2 text-sm">
