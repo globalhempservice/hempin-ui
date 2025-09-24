@@ -16,12 +16,8 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./*"
-      ],
-      "~ui/*": [
-        "../src/*"
-      ] // optional: handy alias to reference lib source
+      "@/*": ["./*"],
+      "~ui/*": ["../src/*"] // optional: handy alias to reference lib source
     },
     "plugins": [
       {

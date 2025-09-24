@@ -1,23 +1,24 @@
 // playground/next.config.mjs
-import withPWAInit from 'next-pwa';
+import withPWA from 'next-pwa';
+import path from 'node:path';
 
-const isDev = process.env.NODE_ENV !== 'production';
+const isDev = process.env.NODE_ENV === 'development';
 
-// 1) Initialize the PWA wrapper with ONLY PWA/workbox options
-const withPWA = withPWAInit({
-  dest: 'public',
-  disable: isDev,   // service worker only in prod
-  register: true,
-  skipWaiting: true,
-  // runtimeCaching: [] // (optional) add custom caching rules later
-});
-
-// 2) Your normal Next.js config (no `pwa:` key here)
-const nextConfig = {
+export default withPWA({
   reactStrictMode: true,
-  experimental: { externalDir: true },
+  experimental: { externalDir: true }, // allow ../src imports
   output: 'standalone',
-};
-
-// 3) Export the wrapped config
-export default withPWA(nextConfig);
+  webpack(config) {
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      '@': path.resolve(__dirname, '../src'),
+    };
+    return config;
+  },
+  pwa: {
+    dest: 'public',
+    disable: isDev,
+    register: true,
+    skipWaiting: true,
+  },
+});
