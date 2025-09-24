@@ -1,17 +1,24 @@
 // playground/next.config.mjs
+import withPWA from 'next-pwa';
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+const isDev = process.env.NODE_ENV === 'development';
+
+const baseConfig = {
   reactStrictMode: true,
 
-  // We are importing from ../src during playground build
-  experimental: { externalDir: true },
+  // Needed because the playground imports from ../src
+  experimental: { externalDir: true, typedRoutes: true },
 
-  // If you ever import from the built package name, you can keep this too:
-  // transpilePackages: ['hempin-ui'],
-
-  // (Optional) makes serverless deploys happier
+  // Keeps Netlify/serverless happier
   output: 'standalone',
 };
 
-export default nextConfig;
+export default withPWA({
+  ...baseConfig,
+  pwa: {
+    dest: 'public',
+    disable: isDev,  // enable SW only in production
+    register: true,
+    skipWaiting: true,
+  },
+});

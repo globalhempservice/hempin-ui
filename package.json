@@ -31,10 +31,11 @@
     "lib:build": "tsup"
   },
   "dependencies": {
+    "clsx": "^2.1.1",
     "next": "14.2.5",
+    "next-pwa": "^5.6.0",
     "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "clsx": "^2.1.1"
+    "react-dom": "18.3.1"
   },
   "devDependencies": {
     "@types/node": "^20.11.30",
