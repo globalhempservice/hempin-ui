@@ -1,9 +1,9 @@
 'use client';
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import GlowButton from '../../../src/components/GlowButton';
-import { useAuth } from '../../src/auth/useAuth';
-import { supabase } from '../../src/auth/supabaseClient';
+import GlowButton from '@/components/GlowButton';
+import { useAuth } from '@/auth/useAuth';
+import { supabase } from '@/auth/supabaseClient';
 
 function Card({ title, onClick }: { title: 'WORK' | 'LIFE'; onClick: () => void }) {
   return (

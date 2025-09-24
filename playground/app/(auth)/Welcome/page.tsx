@@ -1,8 +1,8 @@
 'use client';
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import GlowButton from '../../../src/components/GlowButton';
-import { useAuth } from '../../src/auth/useAuth';
+import GlowButton from '@/components/GlowButton';
+import { useAuth } from '@/auth/useAuth';
 
 export default function Welcome() {
   const { signInOtp } = useAuth();
