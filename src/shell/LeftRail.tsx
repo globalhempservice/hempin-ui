@@ -41,7 +41,9 @@ export default function LeftRail({ items, initiallyCollapsed = true }: Props) {
 
   // keyboard helpers
   const onItemKeyDown = (e: React.KeyboardEvent, it: NavItem) => {
-    if (!it.children?.length) return;
+    const hasChildren = !!(it.children && it.children.length);
+    if (!hasChildren) return;
+
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       onOpen(it.key);
@@ -56,9 +58,7 @@ export default function LeftRail({ items, initiallyCollapsed = true }: Props) {
 
   const isActive = (href?: string) => {
     if (!href) return false;
-    // treat external links as not "active" since they navigate away
-    if (/^https?:\/\//.test(href)) return false;
-    // active if startsWith current pathname
+    if (/^https?:\/\//.test(href)) return false; // external: not marked active
     return pathname === href || pathname?.startsWith(href + '/');
   };
 
@@ -92,18 +92,12 @@ export default function LeftRail({ items, initiallyCollapsed = true }: Props) {
       {/* universes list */}
       <nav className="p-2 space-y-2">
         {items.map((it) => {
-          const open = openKey === it.key && !collapsed && it.children?.length;
+          const hasChildren = !!(it.children && it.children.length);
+          const open = !!(openKey === it.key && !collapsed && hasChildren);
           const active = isActive(it.href);
 
           const badge = (
-            <span
-              className={clsx(
-                itemBase,
-                it.color, // gradient/bg class
-                ringClass,
-                'text-black'
-              )}
-            >
+            <span className={clsx(itemBase, it.color, ringClass, 'text-black')}>
               {it.abbr}
             </span>
           );
@@ -120,7 +114,7 @@ export default function LeftRail({ items, initiallyCollapsed = true }: Props) {
               {!collapsed && (
                 <div className="flex-1 flex items-center justify-between">
                   <span className="text-sm">{it.label}</span>
-                  {it.children && (
+                  {hasChildren && (
                     <button
                       onClick={(e) => {
                         e.preventDefault();
@@ -139,11 +133,11 @@ export default function LeftRail({ items, initiallyCollapsed = true }: Props) {
             </div>
           );
 
+          // keep types calm for d.ts by using any on the wrapper
+          const Wrapper: any = it.external ? 'a' : Link;
           const linkProps = it.external
-            ? { href: it.href, target: '_self' as const }
+            ? { href: it.href, target: '_self' as const, rel: undefined }
             : { href: it.href };
-
-          const Wrapper = it.external ? 'a' : Link;
 
           return (
             <div key={it.key}>
@@ -152,7 +146,6 @@ export default function LeftRail({ items, initiallyCollapsed = true }: Props) {
                 className={clsx('block rounded-md', ringClass)}
                 title={collapsed ? it.label : undefined}
                 onKeyDown={(e: any) => onItemKeyDown(e, it)}
-                // allow keyboard focus even when collapsed
                 tabIndex={0}
                 role="link"
               >
@@ -160,18 +153,18 @@ export default function LeftRail({ items, initiallyCollapsed = true }: Props) {
               </Wrapper>
 
               {/* children accordion */}
-              {!collapsed && it.children?.length ? (
+              {!collapsed && hasChildren ? (
                 <div
-                  id={`sect-${it.key}`}
-                  className={clsx(
-                    'overflow-hidden transition-[grid-template-rows] duration-300 grid',
-                    open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
-                  )}
-                  aria-hidden={!open}
-                >
+                    id={`sect-${it.key}`}
+                    className={clsx(
+                      'overflow-hidden transition-[grid-template-rows] duration-300 grid',
+                      open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+                    )}
+                    aria-hidden={!open}
+                  >
                   <div className="min-h-0">
                     <ul className="mt-1 ml-10 space-y-1">
-                      {it.children.map((c) => {
+                      {it.children!.map((c) => {
                         const child = (
                           <div
                             className={clsx(
