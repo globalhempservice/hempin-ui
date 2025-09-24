@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import clsx from 'clsx';
-import { Tooltip } from '../components/Tooltip';
+import Tooltip from '../components/Tooltip';
 
 type BottomId = 'me' | 'notifications' | 'wallet';
 export default function BottomBar({ onOpen }: { onOpen: (id: BottomId) => void }) {
