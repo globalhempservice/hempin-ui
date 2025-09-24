@@ -7,6 +7,7 @@ import { BottomSheet } from './BottomSheet';
 import LeftRail from './LeftRail';
 import BottomBar from './BottomBar';
 import type { NavItem } from './types';
+import clsx from 'clsx';
 
 const universes: NavItem[] = [
   {
