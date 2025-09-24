@@ -4,34 +4,36 @@ import React, {
   createContext, useCallback, useContext, useMemo, useState, type ReactNode,
 } from 'react';
 
+export type PanelKey = 'settings' | 'inbox' | string | null;
+
 export type PanelAPI = {
   open: boolean;
   setOpen: (v: boolean) => void;
 
-  /** stack management */
-  stack: ReactNode[];
-  current: ReactNode | null;
-  push: (node: ReactNode) => void;
+  /** we manage a stack of panel keys */
+  stack: string[];
+  current: PanelKey;
+
+  push: (key: string) => void;
   pop: () => void;
 
-  /** convenience */
   close: () => void;
-  toggle: (node?: ReactNode) => void;
+  toggle: (key?: string) => void;
 };
 
 const Ctx = createContext<PanelAPI | null>(null);
 
 export function PanelProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
-  const [stack, setStack] = useState<ReactNode[]>([]);
+  const [stack, setStack] = useState<string[]>([]);
 
-  const push = useCallback((node: ReactNode) => {
-    setStack(s => [...s, node]);
+  const push = useCallback((key: string) => {
+    setStack((s) => [...s, key]);
     setOpen(true);
   }, []);
 
   const pop = useCallback(() => {
-    setStack(s => {
+    setStack((s) => {
       const next = s.slice(0, -1);
       if (next.length === 0) setOpen(false);
       return next;
@@ -43,10 +45,10 @@ export function PanelProvider({ children }: { children: ReactNode }) {
     setStack([]);
   }, []);
 
-  const toggle = useCallback((node?: ReactNode) => {
-    setOpen(o => {
-      if (!o && node) setStack(s => [...s, node]);
-      if (o) setStack([]);
+  const toggle = useCallback((key?: string) => {
+    setOpen((o) => {
+      if (!o && key) setStack([key]); // opening: seed with the key
+      if (o) setStack([]);            // closing: clear stack
       return !o;
     });
   }, []);

@@ -109,14 +109,20 @@ const InboxPanel: React.FC = () => {
 
       {/* input bar (sticky & safe-area aware) */}
       <div className="sticky bottom-0 border-t border-white/10 bg-black/60 backdrop-blur p-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]">
-        <form onSubmit={(e) => { e.preventDefault(); send(); }} className="flex min-w-0 gap-2">
+        <form
+          onSubmit={(e) => { e.preventDefault(); send(); }}
+          className="flex min-w-0 gap-2"
+        >
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             className="min-w-0 w-full rounded-md bg-white/5 px-3 py-2 text-sm ring-1 ring-white/10 outline-none focus:ring-2 focus:ring-[var(--color-accent,theme(colors.emerald.400))]"
             placeholder="Write a message to admin…"
           />
-          <button type="submit" className="shrink-0 rounded-md bg-white/10 px-3 text-sm ring-1 ring-white/10 hover:bg-white/15">
+          <button
+            type="submit"
+            className="shrink-0 rounded-md bg-white/10 px-3 text-sm ring-1 ring-white/10 hover:bg-white/15"
+          >
             Send
           </button>
         </form>
@@ -146,7 +152,7 @@ export function ShellLayout({ children }: { children: React.ReactNode }) {
   const sheetOpen = bottomSheet !== null;
   const overlaysOpen = panelOpen || sheetOpen;
 
-  // Lock background scroll when overlays are open (keep your logic)
+  // Lock background scroll when overlays are open
   React.useEffect(() => {
     const prev = document.body.style.overflow;
     if (overlaysOpen) document.body.style.overflow = 'hidden';
@@ -155,23 +161,16 @@ export function ShellLayout({ children }: { children: React.ReactNode }) {
   }, [overlaysOpen]);
 
   return (
-    <div className="grid h-[100dvh] w-full grid-rows-[auto_1fr] bg-black text-white overflow-hidden">
+    <div className="grid h-[100dvh] w-full grid-rows-[auto_1fr] bg-black text-white">
       <TopBar />
 
-      {/* Only main column should scroll */}
-      <div className="grid grid-cols-[auto_1fr] min-h-0">
-        {/* Make aside/main inert while overlays are open (don’t inert the wrapper) */}
-        <aside {...(overlaysOpen ? ({ inert: '' } as any) : {})}>
-          <LeftRail items={universes} initiallyCollapsed={false} />
-        </aside>
-
-        <main
-          className="relative min-h-0 overflow-y-auto overscroll-contain pb-24 sm:pb-24"
-          {...(overlaysOpen ? ({ inert: '' } as any) : {})}
-          aria-hidden={overlaysOpen}
-        >
-          {children}
-        </main>
+      {/* app content – inert when a panel/sheet is open to avoid ARIA focus warnings */}
+      <div
+        className={clsx('grid h-full grid-cols-[auto_1fr]')}
+        {...(overlaysOpen ? ({ inert: '' as any, 'aria-hidden': true } as any) : {})}
+      >
+        <LeftRail items={universes} initiallyCollapsed={false} />
+        <main className="relative overflow-auto pb-24 sm:pb-24">{children}</main>
       </div>
 
       <BottomBar onOpen={(id) => setBottomSheet(id)} />
