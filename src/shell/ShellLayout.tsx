@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 import { PanelProvider, usePanel } from './PanelContext';
 import { SlidePanel } from './SlidePanel';
@@ -10,7 +12,10 @@ const SettingsPanel: React.FC = () => {
     <div className="h-full overflow-auto p-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">Settings</h2>
-        <button onClick={close} className="rounded px-2 py-1 text-sm bg-white/10">
+        <button
+          onClick={close}
+          className="rounded px-2 py-1 text-sm bg-white/10"
+        >
           Close
         </button>
       </div>
@@ -53,7 +58,9 @@ export function ShellLayout({ children }: { children: React.ReactNode }) {
             { href: '/you', label: 'You' },
           ]}
         />
-        <main className="relative overflow-auto pb-16 sm:pb-0">{children}</main>
+        <main className="relative overflow-auto pb-16 sm:pb-0">
+          {children}
+        </main>
       </div>
 
       <BottomBar
