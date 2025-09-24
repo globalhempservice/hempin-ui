@@ -1,8 +1,8 @@
-// playground/app/layout.tsx
 import './globals.css';
-import '../../src/styles/index.css'; // pull the library tokens/utilities into the playground
+import '../../src/styles/index.css';
 import type { Metadata, Viewport } from 'next';
 import ClientShell from './ClientShell';
+import AuthGate from '@/auth/AuthGate';
 
 export const metadata: Metadata = {
   title: 'Hemp’in Playground',
@@ -26,7 +26,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="bg-black">
       <body>
-        <ClientShell>{children}</ClientShell>
+        <AuthGate>
+          <ClientShell>{children}</ClientShell>
+        </AuthGate>
       </body>
     </html>
   );
