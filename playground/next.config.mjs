@@ -1,24 +1,24 @@
-// playground/next.config.mjs
 import withPWA from 'next-pwa';
-import path from 'node:path';
 
 const isDev = process.env.NODE_ENV === 'development';
 
-export default withPWA({
+/** @type {import('next').NextConfig} */
+const nextConfig = withPWA({
   reactStrictMode: true,
-  experimental: { externalDir: true }, // allow ../src imports
-  output: 'standalone',
-  webpack(config) {
-    config.resolve.alias = {
-      ...(config.resolve.alias || {}),
-      '@': path.resolve(__dirname, '../src'),
-    };
-    return config;
-  },
+
+  // we import from ../src during playground build
+  experimental: { externalDir: true },
+
+  // PWA settings
   pwa: {
     dest: 'public',
-    disable: isDev,
+    disable: isDev,     // only enable SW in prod
     register: true,
     skipWaiting: true,
   },
+
+  // leaner serverless output for Netlify
+  output: 'standalone',
 });
+
+export default nextConfig;

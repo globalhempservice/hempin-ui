@@ -34,3 +34,5 @@ Thumbs.db
 
 # Netlify
 .netlify/
+# local only
+playground/.env.local
