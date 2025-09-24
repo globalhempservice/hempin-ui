@@ -24,12 +24,26 @@ const universes: NavItem[] = [
       { label: 'Send an RFP',     href: 'https://market.hempin.org/rfp',      external: true },
     ],
   },
-  { key: 'knowledge', label: 'Knowledge', abbr: 'KL', href: 'https://knowledge.hempin.org', external: true, color: 'bg-rose-400',
-    children: [{ label: 'Browse articles', href: 'https://knowledge.hempin.org', external: true }] },
-  { key: 'directory', label: 'Directory', abbr: 'DY', href: 'https://directory.hempin.org', external: true, color: 'bg-lime-400',
-    children: [{ label: 'Find people/orgs', href: 'https://directory.hempin.org', external: true }] },
+  {
+    key: 'knowledge',
+    label: 'Knowledge',
+    abbr: 'KL',
+    href: 'https://knowledge.hempin.org',
+    external: true,
+    color: 'bg-rose-400',
+    children: [{ label: 'Browse articles', href: 'https://knowledge.hempin.org', external: true }],
+  },
+  {
+    key: 'directory',
+    label: 'Directory',
+    abbr: 'DY',
+    href: 'https://directory.hempin.org',
+    external: true,
+    color: 'bg-lime-400',
+    children: [{ label: 'Find people/orgs', href: 'https://directory.hempin.org', external: true }],
+  },
   { key: 'place', label: 'Place', abbr: 'PL', href: 'https://place.hempin.org', external: true, color: 'bg-cyan-400' },
-  { key: 'fund', label: 'Fund', abbr: 'FD', href: 'https://fund.hempin.org', external: true, color: 'bg-purple-400' },
+  { key: 'fund',  label: 'Fund',  abbr: 'FD', href: 'https://fund.hempin.org',  external: true, color: 'bg-purple-400' },
   { key: 'event', label: 'Event', abbr: 'EV', href: 'https://event.hempin.org', external: true, color: 'bg-pink-400' },
 ];
 
@@ -50,7 +64,7 @@ const SettingsPanel: React.FC = () => {
   );
 };
 
-// V1 admin chat (local-only stub)
+/** V1 admin chat (local-only stub) */
 const InboxPanel: React.FC = () => {
   const { close } = usePanel();
   const [input, setInput] = React.useState('');
@@ -63,7 +77,6 @@ const InboxPanel: React.FC = () => {
     if (!trimmed) return;
     setMessages((m) => [...m, { from: 'me', text: trimmed }]);
     setInput('');
-    // pretend admin replies later; you can wire real API when ready
     setTimeout(() => {
       setMessages((m) => [...m, { from: 'admin', text: 'Noted ✅ We will get back to you.' }]);
     }, 600);
@@ -71,12 +84,14 @@ const InboxPanel: React.FC = () => {
 
   return (
     <div className="grid h-full grid-rows-[auto_1fr_auto]">
+      {/* header */}
       <div className="flex items-center justify-between border-b border-white/10 p-3">
         <h2 className="text-lg font-semibold">Inbox — Admin</h2>
         <button onClick={close} className="rounded px-2 py-1 text-sm bg-white/10">Close</button>
       </div>
 
-      <div className="overflow-auto p-3 space-y-2">
+      {/* messages */}
+      <div className="min-h-0 overflow-y-auto p-3 space-y-2">
         {messages.map((m, i) => (
           <div
             key={i}
@@ -92,21 +107,22 @@ const InboxPanel: React.FC = () => {
         ))}
       </div>
 
-      <div className="border-t border-white/10 p-2">
+      {/* input bar (sticky & safe-area aware) */}
+      <div className="sticky bottom-0 border-t border-white/10 bg-black/60 backdrop-blur p-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]">
         <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            send();
-          }}
-          className="flex gap-2"
+          onSubmit={(e) => { e.preventDefault(); send(); }}
+          className="flex min-w-0 gap-2"
         >
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="w-full rounded-md bg-white/5 px-3 py-2 text-sm ring-1 ring-white/10 outline-none focus:ring-2 focus:ring-[var(--color-accent,theme(colors.emerald.400))]"
+            className="min-w-0 w-full rounded-md bg-white/5 px-3 py-2 text-sm ring-1 ring-white/10 outline-none focus:ring-2 focus:ring-[var(--color-accent,theme(colors.emerald.400))]"
             placeholder="Write a message to admin…"
           />
-          <button type="submit" className="rounded-md bg-white/10 px-3 text-sm ring-1 ring-white/10 hover:bg-white/15">
+          <button
+            type="submit"
+            className="shrink-0 rounded-md bg-white/10 px-3 text-sm ring-1 ring-white/10 hover:bg-white/15"
+          >
             Send
           </button>
         </form>
@@ -132,10 +148,27 @@ export function ShellLayout({ children }: { children: React.ReactNode }) {
   const { current, close } = usePanel();
   const [bottomSheet, setBottomSheet] = React.useState<null | 'me' | 'notifications' | 'wallet'>(null);
 
+  const panelOpen = current === 'settings' || current === 'inbox';
+  const sheetOpen = bottomSheet !== null;
+  const overlaysOpen = panelOpen || sheetOpen;
+
+  // Lock background scroll when overlays are open
+  React.useEffect(() => {
+    const prev = document.body.style.overflow;
+    if (overlaysOpen) document.body.style.overflow = 'hidden';
+    else document.body.style.overflow = prev || '';
+    return () => { document.body.style.overflow = prev || ''; };
+  }, [overlaysOpen]);
+
   return (
     <div className="grid h-[100dvh] w-full grid-rows-[auto_1fr] bg-black text-white">
       <TopBar />
-      <div className="grid h-full grid-cols-[auto_1fr]">
+
+      {/* app content – inert when a panel/sheet is open to avoid ARIA focus warnings */}
+      <div
+        className={clsx('grid h-full grid-cols-[auto_1fr]')}
+        {...(overlaysOpen ? ({ inert: '' as any, 'aria-hidden': true } as any) : {})}
+      >
         <LeftRail items={universes} initiallyCollapsed={false} />
         <main className="relative overflow-auto pb-24 sm:pb-24">{children}</main>
       </div>
@@ -143,8 +176,12 @@ export function ShellLayout({ children }: { children: React.ReactNode }) {
       <BottomBar onOpen={(id) => setBottomSheet(id)} />
 
       {/* Right slide-ins */}
-      <SlidePanel open={current === 'settings'} onClose={close}><SettingsPanel /></SlidePanel>
-      <SlidePanel open={current === 'inbox'} onClose={close}><InboxPanel /></SlidePanel>
+      <SlidePanel open={current === 'settings'} onClose={close}>
+        <SettingsPanel />
+      </SlidePanel>
+      <SlidePanel open={current === 'inbox'} onClose={close}>
+        <InboxPanel />
+      </SlidePanel>
 
       {/* Bottom sheets */}
       <BottomSheet open={bottomSheet === 'me'} onClose={() => setBottomSheet(null)}>
