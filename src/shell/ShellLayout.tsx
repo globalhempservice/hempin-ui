@@ -50,12 +50,12 @@ const universes: NavItem[] = [
 const SettingsPanel: React.FC = () => {
   const { close } = usePanel();
   return (
-    <div className="h-full overflow-auto p-4">
-      <div className="flex items-center justify-between">
+    <div className="grid h-full grid-rows-[auto_1fr]">
+      <div className="sticky top-0 z-10 flex items-center justify-between border-b border-white/10 bg-black/60 px-3 py-2 backdrop-blur">
         <h2 className="text-lg font-semibold">Settings</h2>
         <button onClick={close} className="rounded px-2 py-1 text-sm bg-white/10">Close</button>
       </div>
-      <div className="mt-4 space-y-3">
+      <div className="min-h-0 overflow-y-auto p-4 space-y-3">
         <div className="rounded-lg bg-white/5 p-3 ring-1 ring-white/10">Account</div>
         <div className="rounded-lg bg-white/5 p-3 ring-1 ring-white/10">Privacy</div>
         <div className="rounded-lg bg-white/5 p-3 ring-1 ring-white/10">Connections</div>
@@ -84,14 +84,14 @@ const InboxPanel: React.FC = () => {
 
   return (
     <div className="grid h-full grid-rows-[auto_1fr_auto]">
-      {/* header */}
-      <div className="flex items-center justify-between border-b border-white/10 p-3">
+      {/* header (sticky) */}
+      <div className="sticky top-0 z-10 flex items-center justify-between border-b border-white/10 bg-black/60 px-3 py-2 backdrop-blur">
         <h2 className="text-lg font-semibold">Inbox — Admin</h2>
         <button onClick={close} className="rounded px-2 py-1 text-sm bg-white/10">Close</button>
       </div>
 
       {/* messages */}
-      <div className="min-h-0 overflow-y-auto p-3 space-y-2">
+      <div className="min-h-0 overflow-y-auto overscroll-contain p-3 space-y-2">
         {messages.map((m, i) => (
           <div
             key={i}
@@ -107,8 +107,8 @@ const InboxPanel: React.FC = () => {
         ))}
       </div>
 
-      {/* input bar (sticky & safe-area aware) */}
-      <div className="sticky bottom-0 border-t border-white/10 bg-black/60 backdrop-blur p-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]">
+      {/* input bar (sticky + keyboard-aware via SlidePanel) */}
+      <div className="sticky bottom-0 border-t border-white/10 bg-black/60 backdrop-blur p-2">
         <form
           onSubmit={(e) => { e.preventDefault(); send(); }}
           className="flex min-w-0 gap-2"
@@ -152,7 +152,7 @@ export function ShellLayout({ children }: { children: React.ReactNode }) {
   const sheetOpen = bottomSheet !== null;
   const overlaysOpen = panelOpen || sheetOpen;
 
-  // Lock background scroll when overlays are open
+  // Single source of truth: lock/unlock background scroll
   React.useEffect(() => {
     const prev = document.body.style.overflow;
     if (overlaysOpen) document.body.style.overflow = 'hidden';
@@ -164,10 +164,10 @@ export function ShellLayout({ children }: { children: React.ReactNode }) {
     <div className="grid h-[100dvh] w-full grid-rows-[auto_1fr] bg-black text-white">
       <TopBar />
 
-      {/* app content – inert when a panel/sheet is open to avoid ARIA focus warnings */}
+      {/* App content (inert while overlays are open) */}
       <div
-        className={clsx('grid h-full grid-cols-[auto_1fr]')}
-        {...(overlaysOpen ? ({ inert: '' as any, 'aria-hidden': true } as any) : {})}
+        className="grid h-full grid-cols-[auto_1fr] overflow-hidden"
+        {...(overlaysOpen ? ({ inert: '' as any } as any) : {})}
       >
         <LeftRail items={universes} initiallyCollapsed={false} />
         <main className="relative overflow-auto pb-24 sm:pb-24">{children}</main>

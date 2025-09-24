@@ -10,36 +10,33 @@ type Props = {
 };
 
 export function SlidePanel({ open, onClose, children }: Props) {
-  // lock background scroll while open
+  // keyboard-aware padding for iOS Safari
   React.useEffect(() => {
-    if (!open) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    if (!open || !('visualViewport' in window)) return;
+    const vv = window.visualViewport!;
+    const set = () => {
+      const kb = Math.max(0, (window.innerHeight - vv.height - vv.offsetTop) || 0);
+      document.documentElement.style.setProperty('--kb', `${kb}px`);
+    };
+    set();
+    vv.addEventListener('resize', set);
+    vv.addEventListener('scroll', set);
     return () => {
-      document.body.style.overflow = prev;
+      vv.removeEventListener('resize', set);
+      vv.removeEventListener('scroll', set);
+      document.documentElement.style.setProperty('--kb', `0px`);
     };
   }, [open]);
 
-  // close on ESC
-  React.useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [open, onClose]);
-
   return (
     <div
-      // use visibility to keep from focus issues; and a high z-index
       className={clsx(
         'fixed inset-0 z-[60]',
-        open ? 'visible' : 'invisible'
+        open ? 'visible pointer-events-auto' : 'invisible pointer-events-none'
       )}
       aria-hidden={!open}
     >
-      {/* dim backdrop */}
+      {/* Backdrop */}
       <button
         type="button"
         onClick={onClose}
@@ -47,11 +44,10 @@ export function SlidePanel({ open, onClose, children }: Props) {
           'absolute inset-0 bg-black/50 transition-opacity',
           open ? 'opacity-100' : 'opacity-0'
         )}
-        // make backdrop unfocusable by AT (button keeps it clickable)
         aria-hidden="true"
       />
 
-      {/* panel */}
+      {/* Panel */}
       <div
         role="dialog"
         aria-modal="true"
@@ -61,11 +57,12 @@ export function SlidePanel({ open, onClose, children }: Props) {
           'shadow-xl ring-1 ring-white/10',
           'transition-transform duration-300',
           open ? 'translate-x-0' : 'translate-x-full',
-          // keep content above iOS home indicator
-          'pb-[env(safe-area-inset-bottom)]'
+          // prevent scroll chaining & keep above home indicator & keyboard
+          'pb-[calc(env(safe-area-inset-bottom)+var(--kb))] overflow-hidden overscroll-contain flex flex-col'
         )}
       >
-        {children}
+        {/* Child content takes the space; make sure inner containers can scroll */}
+        <div className="min-h-0 flex-1 overflow-hidden">{children}</div>
       </div>
     </div>
   );

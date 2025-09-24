@@ -16,3 +16,11 @@
   
   /* Tooltip base (positioning handled inline) */
   .ui-tooltip { @apply rounded-md; }
+
+  :root { --kb: 0px; }
+
+/* Prevent top-level scroll chaining when overlays open */
+html, body {
+  height: 100%;
+  overscroll-behavior: none;
+}
