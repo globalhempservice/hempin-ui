@@ -1,2 +1,8 @@
-// src/shell/types.ts
-export type NavItem = { href: string; label: string };
+// Shared types for shell components
+import type * as React from 'react';
+
+export type NavItem = {
+  href: string;
+  label: string;
+  icon?: React.ReactNode;
+};
