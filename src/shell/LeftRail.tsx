@@ -1,7 +1,9 @@
 'use client'
 
-import React from 'react'
-import { NavItem } from './NavItem'
+import * as react from 'react';
+import { NavItem } from './types';
+
+export type LeftRailProps = { items: NavItem[] };
 
 export default function LeftRail() {
   return (

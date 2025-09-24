@@ -1,7 +1,9 @@
 'use client'
 
-import React from 'react'
-import { NavItem } from './NavItem'
+import * as React from 'react';
+import type { NavItem } from './types';
+
+export type BottomBarProps = { items: NavItem[] };
 
 export default function BottomBar() {
   return (
