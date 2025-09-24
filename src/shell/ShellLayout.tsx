@@ -1,4 +1,5 @@
 'use client';
+
 import * as React from 'react';
 import { PanelProvider, usePanel } from './PanelContext';
 import { SlidePanel } from './SlidePanel';
@@ -8,13 +9,62 @@ import BottomBar from './BottomBar';
 import type { NavItem } from './types';
 
 const universes: NavItem[] = [
-  { href: '/', label: 'Home', code: 'HM', colorClass: 'bg-emerald-500' },
-  { href: '/notifications', label: 'Notifications', code: 'NF', colorClass: 'bg-cyan-400' },
-  { href: '/you', label: 'You', code: 'YOU', colorClass: 'bg-indigo-400' },
-  { href: '/market', label: 'Market', code: 'MK', colorClass: 'bg-amber-400' },
-  { href: '/events', label: 'Events', code: 'EV', colorClass: 'bg-fuchsia-400' },
-  { href: '/directory', label: 'Directory', code: 'DY', colorClass: 'bg-lime-400' },
-  { href: '/knowledge', label: 'Knowledge', code: 'KL', colorClass: 'bg-rose-400' }
+  {
+    key: 'market',
+    label: 'Market',
+    abbr: 'MK',
+    href: 'https://market.hempin.org',
+    external: true,
+    color: 'bg-amber-400',
+    children: [
+      { label: 'Go shopping',     href: 'https://market.hempin.org',          external: true },
+      { label: 'Manage my brand', href: 'https://market.hempin.org/brand',    external: true },
+      { label: 'Manage products', href: 'https://market.hempin.org/products', external: true },
+      { label: 'Send an RFP',     href: 'https://market.hempin.org/rfp',      external: true },
+    ],
+  },
+  {
+    key: 'knowledge',
+    label: 'Knowledge',
+    abbr: 'KL',
+    href: 'https://knowledge.hempin.org',
+    external: true,
+    color: 'bg-rose-400',
+    children: [{ label: 'Browse articles', href: 'https://knowledge.hempin.org', external: true }],
+  },
+  {
+    key: 'directory',
+    label: 'Directory',
+    abbr: 'DY',
+    href: 'https://directory.hempin.org',
+    external: true,
+    color: 'bg-lime-400',
+    children: [{ label: 'Find people/orgs', href: 'https://directory.hempin.org', external: true }],
+  },
+  {
+    key: 'place',
+    label: 'Place',
+    abbr: 'PL',
+    href: 'https://place.hempin.org',
+    external: true,
+    color: 'bg-cyan-400',
+  },
+  {
+    key: 'fund',
+    label: 'Fund',
+    abbr: 'FD',
+    href: 'https://fund.hempin.org',
+    external: true,
+    color: 'bg-purple-400',
+  },
+  {
+    key: 'event',
+    label: 'Event',
+    abbr: 'EV',
+    href: 'https://event.hempin.org',
+    external: true,
+    color: 'bg-pink-400',
+  },
 ];
 
 const SettingsPanel: React.FC = () => {
@@ -23,9 +73,7 @@ const SettingsPanel: React.FC = () => {
     <div className="h-full overflow-auto p-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">Settings</h2>
-        <button onClick={close} className="rounded px-2 py-1 text-sm bg-white/10">
-          Close
-        </button>
+        <button onClick={close} className="rounded px-2 py-1 text-sm bg-white/10">Close</button>
       </div>
       <div className="mt-4 space-y-3">
         <div className="rounded-lg bg-white/5 p-3 ring-1 ring-white/10">Account</div>
@@ -42,9 +90,7 @@ const InboxPanel: React.FC = () => {
     <div className="h-full overflow-auto p-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">Inbox</h2>
-        <button onClick={close} className="rounded px-2 py-1 text-sm bg-white/10">
-          Close
-        </button>
+        <button onClick={close} className="rounded px-2 py-1 text-sm bg-white/10">Close</button>
       </div>
       <div className="mt-4 space-y-3 text-sm text-white/70">
         <div className="rounded-lg bg-white/5 p-3 ring-1 ring-white/10">No messages yet.</div>
@@ -54,53 +100,35 @@ const InboxPanel: React.FC = () => {
 };
 
 const TopBar: React.FC = () => {
-  const { toggle, current } = usePanel();
+  const { toggle } = usePanel();
   return (
     <header className="sticky top-0 z-30 flex h-12 items-center justify-between border-b border-white/10 bg-black/40 px-3 backdrop-blur supports-[backdrop-filter]:bg-black/30">
       <div className="font-semibold">Hemp’in Playground</div>
       <div className="flex items-center gap-2">
-        <button
-          title="Inbox"
-          onClick={() => toggle('inbox')}
-          className="rounded-md bg-white/10 px-3 py-1 text-sm ring-1 ring-white/10 hover:bg-white/15"
-        >
-          📥
-        </button>
-        <button
-          title="Settings"
-          onClick={() => toggle('settings')}
-          className="rounded-md bg-white/10 px-3 py-1 text-sm ring-1 ring-white/10 hover:bg-white/15"
-        >
-          ⚙️
-        </button>
+        <button title="Inbox" onClick={() => toggle('inbox')} className="rounded-md bg-white/10 px-3 py-1 text-sm ring-1 ring-white/10 hover:bg-white/15">📥</button>
+        <button title="Settings" onClick={() => toggle('settings')} className="rounded-md bg-white/10 px-3 py-1 text-sm ring-1 ring-white/10 hover:bg-white/15">⚙️</button>
       </div>
     </header>
   );
 };
 
 export function ShellLayout({ children }: { children: React.ReactNode }) {
-  const { current, close, open } = usePanel();
-  const [bottomSheet, setBottomSheet] = React.useState<null | 'me' | 'notifications' | 'wallet'>(
-    null
-  );
+  const { current, close } = usePanel();
+  const [bottomSheet, setBottomSheet] = React.useState<null | 'me' | 'notifications' | 'wallet'>(null);
 
   return (
     <div className="grid h-[100dvh] w-full grid-rows-[auto_1fr] bg-black text-white">
       <TopBar />
       <div className="grid h-full grid-cols-[auto_1fr]">
-        <LeftRail items={universes} />
+        <LeftRail items={universes} initiallyCollapsed={false} />
         <main className="relative overflow-auto pb-24 sm:pb-24">{children}</main>
       </div>
 
-      <BottomBar onOpen={id => setBottomSheet(id)} />
+      <BottomBar onOpen={(id) => setBottomSheet(id)} />
 
       {/* Right slide-ins */}
-      <SlidePanel open={current === 'settings'} onClose={close}>
-        <SettingsPanel />
-      </SlidePanel>
-      <SlidePanel open={current === 'inbox'} onClose={close}>
-        <InboxPanel />
-      </SlidePanel>
+      <SlidePanel open={current === 'settings'} onClose={close}><SettingsPanel /></SlidePanel>
+      <SlidePanel open={current === 'inbox'} onClose={close}><InboxPanel /></SlidePanel>
 
       {/* Bottom sheets */}
       <BottomSheet open={bottomSheet === 'me'} onClose={() => setBottomSheet(null)}>
@@ -110,11 +138,13 @@ export function ShellLayout({ children }: { children: React.ReactNode }) {
           <div className="rounded-lg bg-white/5 p-3 ring-1 ring-white/10">Switch account</div>
         </div>
       </BottomSheet>
+
       <BottomSheet open={bottomSheet === 'notifications'} onClose={() => setBottomSheet(null)}>
         <div className="space-y-2 text-sm">
           <div className="text-white/70">No notifications.</div>
         </div>
       </BottomSheet>
+
       <BottomSheet open={bottomSheet === 'wallet'} onClose={() => setBottomSheet(null)}>
         <div className="space-y-3 text-sm">
           <div className="rounded-lg bg-white/5 p-3 ring-1 ring-white/10">Leaf Balance: 0</div>

@@ -1,8 +1,17 @@
-export type NavItem = {
-  href: string;
+export type UniverseKey = 'market' | 'knowledge' | 'directory' | 'place' | 'fund' | 'event';
+
+export type NavChild = {
   label: string;
-  /** 2–3 chars shown in the badge (e.g. "MK", "EV") */
-  code?: string;
-  /** Tailwind color class for the badge background (e.g. "bg-emerald-500") */
-  colorClass?: string;
+  href: string;       // can be internal or external
+  external?: boolean;
+};
+
+export type NavItem = {
+  key: UniverseKey;
+  label: string;      // full label e.g. "Market"
+  abbr: string;       // initials e.g. "MK"
+  href: string;       // default landing URL
+  external?: boolean;
+  color: string;      // tailwind bg-* token, e.g. 'bg-amber-500'
+  children?: NavChild[];
 };
