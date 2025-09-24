@@ -1,24 +1,23 @@
 // playground/next.config.mjs
-import withPWA from 'next-pwa';
+import withPWAInit from 'next-pwa';
 
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV !== 'production';
 
-const baseConfig = {
+// 1) Initialize the PWA wrapper with ONLY PWA/workbox options
+const withPWA = withPWAInit({
+  dest: 'public',
+  disable: isDev,   // service worker only in prod
+  register: true,
+  skipWaiting: true,
+  // runtimeCaching: [] // (optional) add custom caching rules later
+});
+
+// 2) Your normal Next.js config (no `pwa:` key here)
+const nextConfig = {
   reactStrictMode: true,
-
-  // Needed because the playground imports from ../src
-  experimental: { externalDir: true, typedRoutes: true },
-
-  // Keeps Netlify/serverless happier
+  experimental: { externalDir: true },
   output: 'standalone',
 };
 
-export default withPWA({
-  ...baseConfig,
-  pwa: {
-    dest: 'public',
-    disable: isDev,  // enable SW only in production
-    register: true,
-    skipWaiting: true,
-  },
-});
+// 3) Export the wrapped config
+export default withPWA(nextConfig);
