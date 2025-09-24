@@ -1,24 +1,21 @@
-import withPWA from 'next-pwa';
+// ESM + next-pwa init pattern (correct for Next 14.x)
+import withPWAInit from 'next-pwa';
 
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV !== 'production';
 
-/** @type {import('next').NextConfig} */
-const nextConfig = withPWA({
-  reactStrictMode: true,
-
-  // we import from ../src during playground build
-  experimental: { externalDir: true },
-
-  // PWA settings
-  pwa: {
-    dest: 'public',
-    disable: isDev,     // only enable SW in prod
-    register: true,
-    skipWaiting: true,
-  },
-
-  // leaner serverless output for Netlify
-  output: 'standalone',
+// First, initialize the plugin with its own options
+const withPWA = withPWAInit({
+  dest: 'public',
+  disable: isDev,     // only enable SW in production
+  register: true,
+  skipWaiting: true,
 });
 
-export default nextConfig;
+// Then wrap your Next config
+const nextConfig = {
+  reactStrictMode: true,
+  experimental: { externalDir: true },
+  output: 'standalone',
+};
+
+export default withPWA(nextConfig);
