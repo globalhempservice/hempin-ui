@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useRouter } from 'next/navigation';
 import GlowButton from '@/components/GlowButton';
 import { useAuth } from '@/auth/useAuth';
-import { supabase } from '@/auth/supabaseClient';
+import { supabase } from '@/auth/supabase/client';
 
 function Card({ title, onClick }: { title: 'WORK' | 'LIFE'; onClick: () => void }) {
   return (
