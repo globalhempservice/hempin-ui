@@ -10,78 +10,65 @@ type Props = {
 };
 
 export function SlidePanel({ open, onClose, children }: Props) {
-  const panelRef = React.useRef<HTMLDivElement>(null);
-  const closeBtnRef = React.useRef<HTMLButtonElement>(null);
-  const prevActiveRef = React.useRef<HTMLElement | null>(null);
-
+  // lock background scroll while open
   React.useEffect(() => {
-    const root = document.getElementById('app-root') || document.body; // see ShellLayout note below
-    if (open) {
-      // store prev focused element
-      prevActiveRef.current = document.activeElement as HTMLElement | null;
-
-      // lock background
-      document.body.style.overflow = 'hidden';
-      root.setAttribute('inert', ''); // block interaction behind
-      // move focus inside panel
-      setTimeout(() => {
-        closeBtnRef.current?.focus();
-      }, 0);
-    } else {
-      document.body.style.overflow = '';
-      root.removeAttribute('inert');
-      // restore focus
-      prevActiveRef.current?.focus?.();
-      prevActiveRef.current = null;
-    }
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     return () => {
-      document.body.style.overflow = '';
-      root.removeAttribute('inert');
+      document.body.style.overflow = prev;
     };
   }, [open]);
 
+  // close on ESC
+  React.useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open, onClose]);
+
   return (
     <div
+      // use visibility to keep from focus issues; and a high z-index
       className={clsx(
-        'fixed inset-0 z-40 pointer-events-none',
-        open && 'pointer-events-auto'
+        'fixed inset-0 z-[60]',
+        open ? 'visible' : 'invisible'
       )}
       aria-hidden={!open}
     >
-      {/* dimmer */}
-      <div
+      {/* dim backdrop */}
+      <button
+        type="button"
+        onClick={onClose}
         className={clsx(
-          'absolute inset-0 bg-black/40 transition-opacity',
+          'absolute inset-0 bg-black/50 transition-opacity',
           open ? 'opacity-100' : 'opacity-0'
         )}
-        onClick={onClose}
+        // make backdrop unfocusable by AT (button keeps it clickable)
+        aria-hidden="true"
       />
+
       {/* panel */}
       <div
-        ref={panelRef}
-        className={clsx(
-          'absolute right-0 top-0 h-[100dvh] w-full sm:w-[420px] bg-neutral-950 border-l border-white/10',
-          'translate-x-full transition-transform duration-300 will-change-transform',
-          open && 'translate-x-0',
-          // prevent rubber-banding & background scroll while inside
-          'overscroll-contain flex flex-col'
-        )}
         role="dialog"
         aria-modal="true"
+        className={clsx(
+          'absolute right-0 top-0 h-full w-full max-w-md',
+          'bg-neutral-900/95 backdrop-blur',
+          'shadow-xl ring-1 ring-white/10',
+          'transition-transform duration-300',
+          open ? 'translate-x-0' : 'translate-x-full',
+          // keep content above iOS home indicator
+          'pb-[env(safe-area-inset-bottom)]'
+        )}
       >
-        <div className="flex items-center justify-between h-12 px-3 border-b border-white/10">
-          <div className="font-semibold">Panel</div>
-          <button
-            ref={closeBtnRef}
-            onClick={onClose}
-            className="rounded px-2 py-1 text-sm bg-white/10 ring-1 ring-white/10"
-          >
-            Close
-          </button>
-        </div>
-        {/* content area fills panel; children can rely on flex column */}
-        <div className="min-h-0 flex-1 overflow-y-auto p-3">{children}</div>
+        {children}
       </div>
     </div>
   );
 }
+
+export default SlidePanel;
