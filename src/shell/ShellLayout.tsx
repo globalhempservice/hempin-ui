@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useRouter } from 'next/navigation';
 import { PanelProvider, usePanel } from './PanelContext';
 import { SlidePanel } from './SlidePanel';
 import { BottomSheet } from './BottomSheet';
@@ -9,6 +10,9 @@ import BottomBar from './BottomBar';
 import GlowButton from '../components/GlowButton';
 import type { NavItem } from './types';
 import clsx from 'clsx';
+
+// session (for WORK/LIFE)
+import { useSession } from '@/auth/SessionProvider';
 
 const universes: NavItem[] = [
   {
@@ -60,21 +64,22 @@ const SettingsPanel: React.FC = () => {
         <div className="rounded-lg bg-white/5 p-3 ring-1 ring-white/10">Account</div>
         <div className="rounded-lg bg-white/5 p-3 ring-1 ring-white/10">Privacy</div>
         <div className="rounded-lg bg-white/5 p-3 ring-1 ring-white/10">Connections</div>
+
         {/* Divider */}
-<div className="my-4 border-t border-white/10" />
+        <div className="my-4 border-t border-white/10" />
 
-
-<div className="sticky bottom-0 -mx-4 bg-neutral-900/95 backdrop-blur px-4 pb-4 pt-3">
-  <a
-    href="/logout"
-    className="block w-full rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-center font-medium text-red-300 hover:bg-red-500/15 focus:outline-none focus:ring-2 focus:ring-red-400/40"
-  >
-    Log out
-  </a>
-  <p className="mt-2 text-center text-xs text-white/50">
-    You’ll be signed out of Hemp’in on this device.
-  </p>
-</div>
+        {/* Logout */}
+        <div className="sticky bottom-0 -mx-4 bg-neutral-900/95 backdrop-blur px-4 pb-4 pt-3">
+          <a
+            href="/logout"
+            className="block w-full rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-center font-medium text-red-300 hover:bg-red-500/15 focus:outline-none focus:ring-2 focus:ring-red-400/40"
+          >
+            Log out
+          </a>
+          <p className="mt-2 text-center text-xs text-white/50">
+            You’ll be signed out of Hemp’in on this device.
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -161,6 +166,9 @@ const TopBar: React.FC = () => {
 };
 
 export function ShellLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const { dimension, setDimension } = useSession();
+
   const { current, close } = usePanel();
   const [bottomSheet, setBottomSheet] = React.useState<null | 'me' | 'notifications' | 'wallet'>(null);
 
@@ -200,23 +208,28 @@ export function ShellLayout({ children }: { children: React.ReactNode }) {
       </SlidePanel>
 
       {/* Bottom sheets */}
-<BottomSheet open={bottomSheet === 'me'} onClose={() => setBottomSheet(null)}>
-  <div className="space-y-3 text-sm">
-    <div className="rounded-lg bg-white/5 p-3 ring-1 ring-white/10">Profile</div>
-    <div className="rounded-lg bg-white/5 p-3 ring-1 ring-white/10">Status: Online</div>
+      <BottomSheet open={bottomSheet === 'me'} onClose={() => setBottomSheet(null)}>
+        <div className="space-y-3 text-sm">
+          <div className="rounded-lg bg-white/5 p-3 ring-1 ring-white/10">Profile</div>
+          <div className="rounded-lg bg-white/5 p-3 ring-1 ring-white/10">
+            Status: {dimension === 'WORK' ? 'Working' : 'Living'}
+          </div>
 
-    {/* New glowing switch button */}
-    <GlowButton
-      onClick={() => {
-        console.log('Switch dimension');
-        // later: replace with your real pro<->consumer toggle
-      }}
-      className="w-full"
-    >
-      Switch Dimension
-    </GlowButton>
-  </div>
-</BottomSheet>
+          {/* Switch WORK <-> LIFE */}
+          <GlowButton
+            onClick={() => {
+              const next = dimension === 'WORK' ? 'LIFE' : 'WORK';
+              setDimension(next);
+              setBottomSheet(null);
+              if (next === 'LIFE') router.push('/life');
+              else router.push('/');
+            }}
+            className="w-full"
+          >
+            Switch to {dimension === 'WORK' ? 'LIFE' : 'WORK'}
+          </GlowButton>
+        </div>
+      </BottomSheet>
 
       <BottomSheet open={bottomSheet === 'notifications'} onClose={() => setBottomSheet(null)}>
         <div className="space-y-2 text-sm">
