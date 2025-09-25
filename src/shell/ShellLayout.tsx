@@ -60,6 +60,21 @@ const SettingsPanel: React.FC = () => {
         <div className="rounded-lg bg-white/5 p-3 ring-1 ring-white/10">Account</div>
         <div className="rounded-lg bg-white/5 p-3 ring-1 ring-white/10">Privacy</div>
         <div className="rounded-lg bg-white/5 p-3 ring-1 ring-white/10">Connections</div>
+        {/* Divider */}
+<div className="my-4 border-t border-white/10" />
+
+
+<div className="sticky bottom-0 -mx-4 bg-neutral-900/95 backdrop-blur px-4 pb-4 pt-3">
+  <a
+    href="/logout"
+    className="block w-full rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-center font-medium text-red-300 hover:bg-red-500/15 focus:outline-none focus:ring-2 focus:ring-red-400/40"
+  >
+    Log out
+  </a>
+  <p className="mt-2 text-center text-xs text-white/50">
+    You’ll be signed out of Hemp’in on this device.
+  </p>
+</div>
       </div>
     </div>
   );

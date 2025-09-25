@@ -1,38 +1,35 @@
 'use client';
 
 import * as React from 'react';
-import { useAuth } from './useAuth';
-import GlowButton from '@/components/GlowButton'; // your fancy button (or swap for a regular button)
+import GlowButton from '@/components/GlowButton';
+import { useSession } from '@/auth/SessionProvider';
 
 const WELCOME_KEY = 'hempin:welcome-seen';
 
 export default function AuthGate({ children }: { children: React.ReactNode }) {
-  const boot = useAuth();
-  const [welcomeSeen, setWelcomeSeen] = React.useState<boolean>(false);
+  const { loading, signedIn, setDimension } = useSession();
+  const [welcomeSeen, setWelcomeSeen] = React.useState(false);
 
   React.useEffect(() => {
-    try {
-      setWelcomeSeen(localStorage.getItem(WELCOME_KEY) === '1');
-    } catch {}
+    try { setWelcomeSeen(localStorage.getItem(WELCOME_KEY) === '1'); } catch {}
   }, []);
 
   const continueAsGuest = () => {
     try { localStorage.setItem(WELCOME_KEY, '1'); } catch {}
+    setDimension('LIFE');          // <- persist LIFE as the starting dimension
     setWelcomeSeen(true);
   };
 
   const signIn = () => {
-    // redirect to central auth with return URL
     const origin =
       typeof window !== 'undefined'
         ? `${window.location.protocol}//${window.location.host}`
-        : '';
-    const next = origin || '/';
-    window.location.href = `https://auth.hempin.org/login?next=${encodeURIComponent(next)}`;
+        : '/';
+    window.location.href = `https://auth.hempin.org/login?next=${encodeURIComponent(origin)}`;
   };
 
-  // Loading state
-  if (boot === null) {
+  // Loading (bootstrap still fetching)
+  if (loading) {
     return (
       <div className="grid min-h-[100dvh] place-items-center bg-black text-white">
         <div className="animate-pulse text-white/70">Loading…</div>
@@ -40,8 +37,8 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
     );
   }
 
-  // Show welcome if not seen yet and not signed in
-  if (!welcomeSeen && boot.ok && !boot.signedIn) {
+  // Not signed in + hasn’t seen welcome → show welcome
+  if (!welcomeSeen && !signedIn) {
     return (
       <div className="flex min-h-[100dvh] flex-col items-center justify-center bg-black text-white p-6">
         <div className="mb-8 text-center">
@@ -64,6 +61,6 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
     );
   }
 
-  // Otherwise, render the app shell
+  // App unlocked
   return <>{children}</>;
 }
