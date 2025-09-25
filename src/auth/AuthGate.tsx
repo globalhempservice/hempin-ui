@@ -2,21 +2,24 @@
 
 import * as React from 'react';
 import GlowButton from '@/components/GlowButton';
-import { useSession } from '@/auth/SessionProvider';
+import { useAuth } from '@/auth/useAuth';
 
 const WELCOME_KEY = 'hempin:welcome-seen';
 
 export default function AuthGate({ children }: { children: React.ReactNode }) {
-  const { loading, signedIn, setDimension } = useSession();
+  const boot = useAuth(); // { ok, signedIn, user } | null
   const [welcomeSeen, setWelcomeSeen] = React.useState(false);
 
   React.useEffect(() => {
-    try { setWelcomeSeen(localStorage.getItem(WELCOME_KEY) === '1'); } catch {}
+    try {
+      setWelcomeSeen(localStorage.getItem(WELCOME_KEY) === '1');
+    } catch {}
   }, []);
 
   const continueAsGuest = () => {
-    try { localStorage.setItem(WELCOME_KEY, '1'); } catch {}
-    setDimension('LIFE');          // <- persist LIFE as the starting dimension
+    try {
+      localStorage.setItem(WELCOME_KEY, '1');
+    } catch {}
     setWelcomeSeen(true);
   };
 
@@ -29,7 +32,7 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
   };
 
   // Loading (bootstrap still fetching)
-  if (loading) {
+  if (boot === null) {
     return (
       <div className="grid min-h-[100dvh] place-items-center bg-black text-white">
         <div className="animate-pulse text-white/70">Loading…</div>
@@ -38,7 +41,7 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
   }
 
   // Not signed in + hasn’t seen welcome → show welcome
-  if (!welcomeSeen && !signedIn) {
+  if (boot.ok && !boot.signedIn && !welcomeSeen) {
     return (
       <div className="flex min-h-[100dvh] flex-col items-center justify-center bg-black text-white p-6">
         <div className="mb-8 text-center">
