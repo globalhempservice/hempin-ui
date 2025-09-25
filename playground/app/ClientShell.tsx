@@ -32,7 +32,9 @@ export default function ClientShell({ children }: { children: React.ReactNode })
   return (
     <SessionProvider>
       <AuthGate>
+        <PanelProvider>
         <ShellWithSession>{children}</ShellWithSession>
+        </PanelProvider>
       </AuthGate>
     </SessionProvider>
   );
