@@ -1,18 +1,39 @@
 'use client';
 import React from 'react';
+import { useRouter } from 'next/navigation';
 
 // Build-safe shell bits from compiled library
 import { PanelProvider, ShellLayout } from '../../dist';
 
-// Gate: welcome + sign-in/guest choice (hook-based, no provider)
+// Session from app layer
+import { SessionProvider, useSession } from '@/auth/SessionProvider';
 import AuthGate from '@/auth/AuthGate';
+
+function ShellWithSession({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const { dimension, setDimension } = useSession();
+
+  return (
+    <PanelProvider>
+      <ShellLayout
+        dimension={dimension}
+        onSwitchDimension={(next) => {
+          setDimension(next);
+          router.push(next === 'LIFE' ? '/life' : '/');
+        }}
+      >
+        {children}
+      </ShellLayout>
+    </PanelProvider>
+  );
+}
 
 export default function ClientShell({ children }: { children: React.ReactNode }) {
   return (
-    <AuthGate>
-      <PanelProvider>
-        <ShellLayout>{children}</ShellLayout>
-      </PanelProvider>
-    </AuthGate>
+    <SessionProvider>
+      <AuthGate>
+        <ShellWithSession>{children}</ShellWithSession>
+      </AuthGate>
+    </SessionProvider>
   );
 }
